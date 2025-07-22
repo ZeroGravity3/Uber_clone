@@ -10,4 +10,11 @@ router.post('/register', [
 ],
 userController.registerUser
 );
+
+router.post('/login', [
+    body('email').isEmail().withMessage('Invalid email'),
+    body('password').exists().withMessage('Password is required')
+],
+userController.loginUser
+)
 module.exports = router;
