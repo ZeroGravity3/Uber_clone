@@ -98,3 +98,83 @@ The endpoint expects a JSON payload with the following properties:
   "message": "Invalid email or password"
 }
 ```
+
+---
+
+# /users/profile Endpoint Documentation
+
+## Description
+The `/users/profile` endpoint retrieves the authenticated user's profile information. This endpoint requires authentication via a valid JWT token.
+
+## HTTP Method
+GET
+
+## URL
+`/users/profile`
+
+## Headers
+- **Authorization**: Bearer token required
+  ```
+  Authorization: Bearer <your_jwt_token>
+  ```
+
+## Response
+
+### Success (200)
+```json
+{
+  "user": {
+    "id": "64f1c2e5b6a3c2a1b8e7d9f0",
+    "email": "user@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "createdAt": "2024-06-10T12:34:56.789Z"
+  }
+}
+```
+
+### Error (401)
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+---
+
+# /users/logout Endpoint Documentation
+
+## Description
+The `/users/logout` endpoint logs out the currently authenticated user by invalidating their token and clearing the authentication cookie.
+
+## HTTP Method
+GET
+
+## URL
+`/users/logout`
+
+## Headers
+- **Authorization**: Bearer token required
+  ```
+  Authorization: Bearer <your_jwt_token>
+  ```
+
+## Response
+
+### Success (200)
+```json
+{
+  "message": "User logged out successfully"
+}
+```
+
+### Error (401)
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+Note: Upon successful logout, the token will be blacklisted and the authentication cookie will be cleared.
