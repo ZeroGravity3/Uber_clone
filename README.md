@@ -178,3 +178,100 @@ GET
 ```
 
 Note: Upon successful logout, the token will be blacklisted and the authentication cookie will be cleared.
+
+---
+
+# Captain Endpoints Documentation
+
+## Register Captain
+Allows new captains to register with their personal and vehicle information.
+
+### HTTP Method
+POST
+
+### URL
+`/captain/register`
+
+### Request Body
+The endpoint expects a JSON payload with the following properties:
+
+```json
+{
+  "fullname": {
+    "firstname": "string", // required, min 3 characters
+    "lastname": "string"   // optional
+  },
+  "email": "string",       // required, valid email format
+  "password": "string",    // required, min 6 characters
+  "vehicle": {
+    "color": "string",     // required, min 3 characters
+    "plate": "string",     // required, min 3 characters
+    "capacity": "number",  // required, min value 1
+    "vehiclesType": "string" // required, must be 'car', 'auto', or 'bike'
+  }
+}
+```
+
+### Example Request
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "password": "secret123",
+  "vehicle": {
+    "color": "Black",
+    "plate": "ABC-123",
+    "capacity": 4,
+    "vehiclesType": "car"
+  }
+}
+```
+
+### Response
+
+#### Success (201)
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "id": "64f1c2e5b6a3c2a1b8e7d9f0",
+    "email": "john.doe@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "vehiclesType": "car"
+    },
+    "createdAt": "2024-06-10T12:34:56.789Z"
+  }
+}
+```
+
+#### Error (400)
+```json
+{
+  "errors": [
+    {
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+### Validation Rules
+- **firstname**: Minimum 3 characters
+- **email**: Must be a valid email format
+- **password**: Minimum 6 characters
+- **vehicle.color**: Minimum 3 characters
+- **vehicle.plate**: Minimum 3 characters
+- **vehicle.capacity**: Must be an integer greater than or equal to 1
+- **vehicle.vehiclesType**: Must be one of: 'car', 'auto', 'bike'
