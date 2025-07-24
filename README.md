@@ -183,49 +183,31 @@ Note: Upon successful logout, the token will be blacklisted and the authenticati
 
 # Captain Endpoints Documentation
 
-## Register Captain
-Allows new captains to register with their personal and vehicle information.
+## /captains/register
+
+### Description
+Registers a new captain with their vehicle information in the system.
 
 ### HTTP Method
 POST
 
 ### URL
-`/captain/register`
+`/captains/register`
 
 ### Request Body
-The endpoint expects a JSON payload with the following properties:
-
 ```json
 {
   "fullname": {
-    "firstname": "string", // required, min 3 characters
-    "lastname": "string"   // optional
+    "firstname": "string",  // required, min 3 characters
+    "lastname": "string"    // optional
   },
-  "email": "string",       // required, valid email format
-  "password": "string",    // required, min 6 characters
+  "email": "string",        // required, valid email
+  "password": "string",     // required, min 6 characters
   "vehicle": {
-    "color": "string",     // required, min 3 characters
-    "plate": "string",     // required, min 3 characters
-    "capacity": "number",  // required, min value 1
-    "vehiclesType": "string" // required, must be 'car', 'auto', or 'bike'
-  }
-}
-```
-
-### Example Request
-```json
-{
-  "fullname": {
-    "firstname": "John",
-    "lastname": "Doe"
-  },
-  "email": "john.doe@example.com",
-  "password": "secret123",
-  "vehicle": {
-    "color": "Black",
-    "plate": "ABC-123",
-    "capacity": 4,
-    "vehiclesType": "car"
+    "color": "string",      // required, min 3 characters
+    "plate": "string",      // required, min 3 characters
+    "capacity": number,     // required, min 1
+    "vehiclesType": "string" // required: 'car', 'auto', or 'bike'
   }
 }
 ```
@@ -238,18 +220,17 @@ The endpoint expects a JSON payload with the following properties:
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "captain": {
     "id": "64f1c2e5b6a3c2a1b8e7d9f0",
-    "email": "john.doe@example.com",
+    "email": "captain@example.com",
     "fullname": {
       "firstname": "John",
       "lastname": "Doe"
     },
     "vehicle": {
       "color": "Black",
-      "plate": "ABC-123",
+      "plate": "ABC123",
       "capacity": 4,
       "vehiclesType": "car"
-    },
-    "createdAt": "2024-06-10T12:34:56.789Z"
+    }
   }
 }
 ```
@@ -259,19 +240,131 @@ The endpoint expects a JSON payload with the following properties:
 {
   "errors": [
     {
-      "msg": "First name must be at least 3 characters long",
-      "param": "fullname.firstname",
+      "msg": "Vehicle type must be one of car, auto, or bike",
+      "param": "vehicle.vehiclesType",
       "location": "body"
     }
   ]
 }
 ```
 
-### Validation Rules
-- **firstname**: Minimum 3 characters
-- **email**: Must be a valid email format
-- **password**: Minimum 6 characters
-- **vehicle.color**: Minimum 3 characters
-- **vehicle.plate**: Minimum 3 characters
-- **vehicle.capacity**: Must be an integer greater than or equal to 1
-- **vehicle.vehiclesType**: Must be one of: 'car', 'auto', 'bike'
+## /captains/login
+
+### Description
+Authenticates a captain and returns a JWT token.
+
+### HTTP Method
+POST
+
+### URL
+`/captains/login`
+
+### Request Body
+```json
+{
+  "email": "string",    // required, valid email
+  "password": "string"  // required, min 6 characters
+}
+```
+
+### Response
+
+#### Success (200)
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "id": "64f1c2e5b6a3c2a1b8e7d9f0",
+    "email": "captain@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehiclesType": "car"
+    }
+  }
+}
+```
+
+#### Error (401)
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+## /captains/profile
+
+### Description
+Retrieves the authenticated captain's profile information.
+
+### HTTP Method
+GET
+
+### URL
+`/captains/profile`
+
+### Headers
+```
+Authorization: Bearer <jwt_token>
+```
+
+### Response
+
+#### Success (200)
+```json
+{
+  "captain": {
+    "id": "64f1c2e5b6a3c2a1b8e7d9f0",
+    "email": "captain@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehiclesType": "car"
+    }
+  }
+}
+```
+
+## /captains/logout
+
+### Description
+Logs out the currently authenticated captain.
+
+### HTTP Method
+GET
+
+### URL
+`/captains/logout`
+
+### Headers
+```
+Authorization: Bearer <jwt_token>
+```
+
+### Response
+
+#### Success (200)
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error (401)
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+Note: Upon successful logout, the token will be blacklisted and cannot be used for future requests.
