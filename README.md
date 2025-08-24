@@ -206,7 +206,7 @@ POST
   "vehicle": {
     "color": "string",      // required, min 3 characters
     "plate": "string",      // required, min 3 characters
-    "capacity": number,     // required, min 1
+    "capacity": "number",     // required, min 1
     "vehiclesType": "string" // required: 'car', 'auto', or 'bike'
   }
 }
