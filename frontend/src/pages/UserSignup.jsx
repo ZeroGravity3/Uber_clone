@@ -10,7 +10,7 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
 
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserDataContext);  // FIXED
+  const { user, setUser } = useContext(UserDataContext);  
 
   const submitHandler = async (e) => {
     e.preventDefault();
